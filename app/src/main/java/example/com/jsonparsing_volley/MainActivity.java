@@ -1,5 +1,6 @@
 package example.com.jsonparsing_volley;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ArrayAdapter;
@@ -22,6 +23,8 @@ public class MainActivity extends AppCompatActivity {
     private ListView listView;
     private ArrayAdapter<String> adapter;
     private List<String> namesList;
+    // Creating Progress dialog.
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +33,9 @@ public class MainActivity extends AppCompatActivity {
 
         listView = findViewById(R.id.list_view);
         namesList = new ArrayList<>();
+        progressDialog = new ProgressDialog(MainActivity.this);
+        progressDialog.setMessage("Please Wait, loading");
+        progressDialog.show();
         getStringRequest();
     }
 
@@ -50,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
                     // namesList is filled with title names from the movies object
                     namesList.add(mModel.get(i).getOriginalTitle());
                 }
+                progressDialog.dismiss();
                 // setting datas into the adapter
                 adapter = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_1, namesList);
                 // setting adapter in the list
@@ -59,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                progressDialog.dismiss();
                 Toast.makeText(getApplicationContext(), "Sorry, no data available", Toast.LENGTH_LONG).show();
             }
         });
